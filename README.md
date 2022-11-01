@@ -1,3 +1,3 @@
 # infa_2022_kapitanov
 
-add smth to readme
+It's a test progect
