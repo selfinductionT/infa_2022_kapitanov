@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from random import choice
 
 import pygame
@@ -39,7 +40,7 @@ class Ball:
         self.color = choice(GAME_COLORS)
         self.live = 30
 
-    def move(self):
+    def move(self, dt):
         """Переместить мяч по прошествии единицы времени.
 
         Метод описывает перемещение мяча за один кадр перерисовки. То есть, обновляет значения
@@ -47,8 +48,9 @@ class Ball:
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
-        self.x += self.vx
-        self.y += -self.vy/2 + g*(1/4)/2
+        self.x += self.vx*dt
+        self.y += self.vy*dt + g*(dt**2)/2
+        self.vy += g*dt
 
     def draw(self):
         pygame.draw.circle(
@@ -93,7 +95,7 @@ class Gun:
         new_ball.r += 5
         self.an = math.atan2((event.pos[1]-new_ball.y), (event.pos[0]-new_ball.x))
         new_ball.vx = self.f2_power * math.cos(self.an)
-        new_ball.vy = - self.f2_power * math.sin(self.an)
+        new_ball.vy = self.f2_power * math.sin(self.an)
         balls.append(new_ball)
         self.f2_on = 0
         self.f2_power = 10
@@ -170,7 +172,7 @@ while not finished:
             gun.targetting(event)
 
     for b in balls:
-        b.move()
+        b.move(dt/100)
         if b.hittest(target) and target.live:
             target.live = 0
             target.hit()
