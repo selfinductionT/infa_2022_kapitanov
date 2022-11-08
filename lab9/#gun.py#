@@ -124,9 +124,10 @@ class Gun:
         # FIXIT don't know how to do it
         pygame.draw.line(
             self.screen,
+            RED,
             self.position,
             event.pos,
-            WIDTH = 1
+            10
         )
 
     def power_up(self):
@@ -171,7 +172,7 @@ finished = False
 
 while not finished:
     screen.fill(WHITE)
-    gun.draw()
+#    gun.draw(pygame.MOUSEMOTION)
     target.draw()
     for b in balls:
         b.draw()
@@ -187,6 +188,7 @@ while not finished:
             gun.fire2_end(event)
         elif event.type == pygame.MOUSEMOTION:
             gun.targetting(event)
+            gun.draw(event)
 
     for b in balls:
         b.move(dt/100)
