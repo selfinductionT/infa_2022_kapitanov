@@ -16,18 +16,21 @@ CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
+list_of_balls = []
+
 
 def new_ball():
-    '''рисует новый шарик'''
+    '''создает новый шарик'''
     global list_of_balls
     rc = np.array([
-        randint(100, 700),
-        randint(100, 500)
+        randint(100, 1100),
+        randint(100, 800)
     ])
     v = np.array([
         randint(100, 200),
         randint(100, 200)
     ])
+    v *= np.random.choice([-1, 1], (2))
     r = randint(30, 50)
     color = COLORS[randint(0, 5)]
     list_of_balls.append([rc, r, v, color])
@@ -35,11 +38,13 @@ def new_ball():
 
 
 def move_balls(dt):
+    '''передвижение шариков'''
     for ball in list_of_balls:
         move_ball(ball, dt)
 
 
 def move_ball(ball, dt):
+    '''движение шарика'''
     if wall_left(ball):
         mirror_left(ball)
     if wall_up(ball):
@@ -55,6 +60,7 @@ def move_ball(ball, dt):
 
 
 def wall_left(ball):
+    '''подлетел ли шарик к левой стенке'''
     x = ball[0][0]
     r = ball[1]
     vx = ball[2][0]
@@ -62,6 +68,7 @@ def wall_left(ball):
 
 
 def wall_up(ball):
+    '''подлетел ли шарик к потолку'''
     y = ball[0][1]
     r = ball[1]
     vy = ball[2][1]
@@ -69,6 +76,7 @@ def wall_up(ball):
 
 
 def wall_right(ball):
+    '''подлетел ли шарик к правой стенке'''
     x = ball[0][0]
     r = ball[1]
     vx = ball[2][0]
@@ -76,6 +84,7 @@ def wall_right(ball):
 
 
 def wall_down(ball):
+    '''подлетел ли шарик к полу'''
     y = ball[0][1]
     r = ball[1]
     vy = ball[2][1]
@@ -83,6 +92,7 @@ def wall_down(ball):
 
 
 def mirror_left(ball):
+    '''отражение шарика слева'''
     rc = ball[0]
     v = ball[2]
     r = ball[1]
@@ -91,6 +101,7 @@ def mirror_left(ball):
 
 
 def mirror_up(ball):
+    '''отражение шарика от потолка'''
     rc = ball[0]
     v = ball[2]
     r = ball[1]
@@ -99,6 +110,7 @@ def mirror_up(ball):
 
 
 def mirror_right(ball):
+    '''отражение шарика справа'''
     rc = ball[0]
     v = ball[2]
     r = ball[1]
@@ -107,6 +119,7 @@ def mirror_right(ball):
 
 
 def mirror_down(ball):
+    '''отражение шарика от потолка'''
     rc = ball[0]
     v = ball[2]
     r = ball[1]
@@ -115,6 +128,7 @@ def mirror_down(ball):
 
 
 def draw_ball(ball):
+    '''рисует шарик из списка шариков'''
     draw.circle(
         screen,
         ball[3],
@@ -126,15 +140,20 @@ def check(event):
     '''проверка попадания по шарику'''
     global count
     check = False
-    for i in list_of_balls:
-        rc = i[0]
-        r = i[1]
+    position_of_catched = None
+    for i in range(len(list_of_balls)):
+        ball = list_of_balls[i]
+        rc = ball[0]
+        r = ball[1]
         if ro(np.array(event.pos), rc) < r:
             check = True
+            position_of_catched = i
         else:
             pass
     if check:
         print("yes")
+        list_of_balls.pop(position_of_catched)
+        new_ball()
         count += 1
     else:
         print("misclick")
@@ -148,7 +167,6 @@ def ro(coord1, coord2):
 
 def new_step(dt):
     '''обновляет изображение на экране'''
-    # FIXIT draw ball
     move_balls(dt/1000)
     for ball in list_of_balls:
         draw_ball(ball)
@@ -169,7 +187,6 @@ def catch_event():
 
 count = 0
 clock = pygame.time.Clock()
-list_of_balls = []
 finished = False
 new_ball()
 new_ball()
