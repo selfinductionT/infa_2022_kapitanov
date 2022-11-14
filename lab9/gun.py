@@ -41,11 +41,12 @@ class Ball:
     def move(self, dt):
         """Переместить мяч по прошествии единицы времени.
 
-        Метод описывает перемещение мяча за один кадр перерисовки. То есть, обновляет значения
-        self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
+        Метод описывает перемещение мяча за один кадр перерисовки. То есть,
+обновляет значения
+        self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации,
+действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        # FIXME
         if self.r_c[1] + self.r > HEIGHT and self.v[1] > 0:
             self.v *= np.array([0.7, -0.7])
             self.r_c[1] = HEIGHT - self.r
@@ -67,12 +68,14 @@ class Ball:
         )
 
     def hittest(self, obj):
-        """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
+        """Функция проверяет сталкивалкивается ли данный обьект с целью,
+описываемой в обьекте obj.
 
         Args:
             obj: Обьект, с которым проверяется столкновение.
         Returns:
-            Возвращает True в случае столкновения мяча и цели. В противном случае возвращает False.
+            Возвращает True в случае столкновения мяча и цели. В противном
+случае возвращает False.
         """
         # FIXME
         return False
@@ -94,7 +97,8 @@ class Gun:
         """Выстрел мячом.
 
         Происходит при отпускании кнопки мыши.
-        Начальные значения компонент скорости мяча vx и vy зависят от положения мыши.
+        Начальные значения компонент скорости мяча vx и vy зависят от положения
+мыши.
         """
         global balls, bullet
         bullet += 1
@@ -120,14 +124,18 @@ class Gun:
         else:
             self.color = GREY
 
-    def draw(self, event):
+    def draw(self):
         # FIXIT don't know how to do it
         pygame.draw.line(
             self.screen,
-            self.position,
-            event.pos,
-            WIDTH = 1
+            RED,
+            tuple(self.position),
+            tuple(self.position + self.f2_power*np.array([
+                np.cos(self.an),
+                np.sin(self.an)])),
+            10
         )
+        pygame.display.update()
 
     def power_up(self):
         if self.f2_on:
@@ -171,13 +179,18 @@ finished = False
 
 while not finished:
     screen.fill(WHITE)
-    gun.draw()
+
+    dt = clock.tick(FPS)
+
     target.draw()
     for b in balls:
         b.draw()
+        b.live -= dt*1000
+        if b.live <= 0:
+            balls.pop(b)
+    gun.draw()
     pygame.display.update()
 
-    dt = clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
