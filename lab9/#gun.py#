@@ -187,7 +187,7 @@ while not finished:
     for b in balls:
         b.draw()
         if b.hittest(target):
-            target = Target()
+            target = Target(screen)
         b.live -= dt/150
         if b.live <= 0:
             balls.remove(b)
@@ -206,10 +206,10 @@ while not finished:
 
     for b in balls:
         b.move(dt/100)
-        if b.hittest(target) and target.live:
-            target.live = 0
-            target.hit()
-            target.new_target()
+#        if b.hittest(target) and target.live:
+#            target.live = 0
+#            target.hit()
+#            target.new_target()
     gun.power_up()
 
 pygame.quit()
