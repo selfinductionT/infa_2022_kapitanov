@@ -60,6 +60,7 @@ class Ball:
             self.v += g*dt
 
     def draw(self):
+        """Рисует шарик"""
         pygame.draw.circle(
             self.screen,
             self.color,
@@ -95,6 +96,8 @@ class Gun:
         self.position = np.array([20, 450])
 
     def fire2_start(self, event):
+        """Вызывается, когда игрок нажал на кнопку мыши.
+Соответствует началу стрельбы"""
         self.f2_on = 1
 
     def fire2_end(self, event):
@@ -132,9 +135,9 @@ class Gun:
         """Рисует пистолет"""
         pygame.draw.line(
             self.screen,
-            RED,
+            self.color,
             tuple(self.position),
-            tuple(self.position + self.f2_power*np.array([
+            tuple(self.position + (1 + self.f2_power)*np.array([
                 np.cos(self.an),
                 np.sin(self.an)])),
             10
@@ -156,10 +159,11 @@ class Target:
             randint(600, 780),
             randint(300, 550)
         ])
-        self.r = randint(2, 50)
+        self.r = randint(5, 50)
         self.color = RED
 
     def draw(self):
+        """Отрисовка цели"""
         pygame.draw.circle(
             screen,
             self.color,
@@ -187,7 +191,7 @@ while not finished:
     for b in balls:
         b.draw()
         if b.hittest(target):
-            target = Target()
+            target = Target(screen)
         b.live -= dt/150
         if b.live <= 0:
             balls.remove(b)
@@ -206,10 +210,6 @@ while not finished:
 
     for b in balls:
         b.move(dt/100)
-        if b.hittest(target) and target.live:
-            target.live = 0
-            target.hit()
-            target.new_target()
     gun.power_up()
 
 pygame.quit()
