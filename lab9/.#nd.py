@@ -1,1 +1,0 @@
-ivasiy@ivasiy-IdeaPad-5-15ARE05.10210:1668444141
